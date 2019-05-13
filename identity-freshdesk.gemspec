@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.version     = Identity::Freshdesk::VERSION
   spec.authors     = ["Marcin Koziej"]
   spec.email       = ["marcin@akcjademokracja.pl"]
-  spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of Identity::Freshdesk."
-  spec.description = "TODO: Description of Identity::Freshdesk."
+  spec.homepage    = "https://github.com/the-open/identity-freshdesk"
+  spec.summary     = "Freshdesk integration plugin for Identity"
+  spec.description = "Create rules to run in Identity when members create or update tickets in Freshdesk"
   spec.license     = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -25,7 +25,8 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
+  spec.add_dependency 'sidekiq', '~> 5.1.1'
+  spec.add_dependency 'httpclient', '~> 2.8.3'
   spec.add_dependency "rails", "~> 5.2.2", ">= 5.2.2.1"
 
-  spec.add_development_dependency "sqlite3"
 end
