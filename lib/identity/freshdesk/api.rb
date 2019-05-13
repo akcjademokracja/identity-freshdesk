@@ -1,13 +1,10 @@
 module Identity
   module Freshdesk
     module API
-      def self.foo
-        12
-      end
-
       def auth
         {
           username: Settings.freshdesk.api_key || ENV['FRESHDESK_API_TOKEN'],
+          password: 'X'
         }
       end
 
@@ -16,37 +13,56 @@ module Identity
       end
 
       def authenticated_client
-        client = HTTPClient.new
-        a = auth()
-        d = "https://#{domain}/api/v2"
-        client.set_auth(nil, a[:username], a[:password])
-        client
+        a = auth
+        # Somehow HTTPClient.set_auth does not work.
+        basic = Base64.strict_encode64(a[:username] + ':' + a[:password])
+        HTTPClient.new(default_header: {
+                         'Authorization' => "Basic #{basic}"
+                       })
+      end
+
+      # API calls
+      def get_ticket(ticket_id)
+        url = "https://#{domain}/api/v2/tickets/#{ticket_id}?include=requester"
+        request(url)
+      end
+
+      # API calling
+      class Error < StandardError
       end
 
       def request(url)
         c = authenticated_client()
         r = c.get(url)
 
+        rate_limit_hit? r
+        if r.ok?
+          JSON.parse r.body
+        else
+          raise Error, "Freshdesk API error #{r.status}: #{r.body}"
+        end
+
       end
 
-      def get_ticket(ticket_id)
-        url = "https://#{domain}/api/v2/tickets/#{ticket_id}?include=requester"
-        request(url)
+
+      # Rate limiting of API calls
+      class Retry < StandardError
+        attr_reader :in_seconds
+        def initialize(in_seconds)
+          super "Freshdesk rate limit hit. Retry in #{in_seconds}"
+          @in_seconds = in_seconds
+        end
       end
 
       def rate_limit_hit?(response)
         # Throw an exception upon hitting the rate limit
-        if response.headers["x-ratelimit-remaining"].to_i < 2 or response.response["status"] == "429"
+        if response.status == 429
           # reschedule it for later
-          puts "Rate limit hit. Will retry after #{(response.response["retry-after"].to_i + 10) / 60} minutes."
-          AortaCheckTicketWorker.perform_in(response.headers["retry-after"].to_i + 10, @ticket_id)
-          return true
-        elsif response.response["status"] != "200 OK"
-          raise AortaCheckTicketWorker::FreshDeskError.new("Something went wrong! Status: #{response.response["status"]} ReqId: #{response.headers['x-requestid']}")
-        end
-        false
-      end
+          schedule_in = response.headers['retry-after'].to_i + 10
 
+          raise Retry.new(schedule_in)
+        end
+      end
     end
   end
 end

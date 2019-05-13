@@ -5,10 +5,12 @@ module Identity
     def webhook
       respond_to do |format|
         format.json do
-          puts params[:ticket]
-          puts params[:triggered_event]
+          data = params[:freshdesk_webhook]
 
-          Freshdesk::Ticket
+          Freshdesk::ProcessTicketWorker.perform_async(
+            data[:ticket][:id],
+            data[:triggered_event]
+          )
           render json: {success: true}
         end
       end

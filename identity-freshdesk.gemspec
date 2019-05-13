@@ -29,4 +29,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'httpclient', '~> 2.8.3'
   spec.add_dependency "rails", "~> 5.2.2", ">= 5.2.2.1"
 
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'database_cleaner'
+  spec.add_development_dependency 'factory_bot_rails'
+  spec.add_development_dependency 'faker'
+  spec.add_development_dependency 'pg'
+  spec.add_development_dependency 'rspec-rails'
+  spec.add_development_dependency 'rspec-mocks'
+  spec.add_development_dependency 'codecov'
 end
