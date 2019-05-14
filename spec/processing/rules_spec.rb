@@ -111,6 +111,17 @@ describe 'rule' do
     end
   end
 
+  describe "execution of actions changing requester's" do
+    before (:each) { rules.execute(actions) }
+    subject { rules.requester_changeset }
+
+    describe "description" do
+      let (:actions) {{description: "foo bar"}}
+
+      it { is_expected.to include(description: 'foo bar')}
+    end
+  end
+
   describe 'renderring' do
     subject { rules.render(template) }
     describe 'of ticket_id' do
