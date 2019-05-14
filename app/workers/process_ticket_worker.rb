@@ -5,11 +5,10 @@ module Identity
 
       def perform(ticket, event)
         @event = event
-        @member = FindMember.new.
-                    by_email(ticket['requester']['email']).
-                    by_unsubscribe_link(ticket['description'])
+        @member = FindMember.by_email(ticket['requester']['email']) or
+          @member = FindMember.by_unsubscribe_link(ticket['description'])
 
-        return if @member.nil?
+
       end
 
     end

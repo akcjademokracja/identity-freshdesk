@@ -27,4 +27,6 @@ describe 'Freshdesk api auth' do
       end
     end
   end
+
+
 end

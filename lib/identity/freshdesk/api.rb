@@ -17,23 +17,34 @@ module Identity
         # Somehow HTTPClient.set_auth does not work.
         basic = Base64.strict_encode64(a[:username] + ':' + a[:password])
         HTTPClient.new(default_header: {
+                         'Content-Type' => 'application/json',
                          'Authorization' => "Basic #{basic}"
                        })
       end
 
       # API calls
       def get_ticket(ticket_id)
-        url = "https://#{domain}/api/v2/tickets/#{ticket_id}?include=requester"
-        request(url)
+        url = "https://#{domain}/api/v2/tickets/#{ticket_id}"
+        request(:get, url, {include: 'requester'})
+      end
+
+      def update_requester(requester_id, data)
+        url = "https://#{domain}/api/v2/contacts/#{requester_id}"
+        request(:put, url, {body: data.to_json})
+      end
+
+      def update_ticket(ticket_id, data)
+        url = "https://#{domain}/api/v2/tickets/#{ticket_id}"
+        request(:put, url, {body: data.to_json})
       end
 
       # API calling
       class Error < StandardError
       end
 
-      def request(url)
+      def request(method, url, params=nil)
         c = authenticated_client()
-        r = c.get(url)
+        r = c.request(method, url, params)
 
         rate_limit_hit? r
         if r.ok?

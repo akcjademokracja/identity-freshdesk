@@ -4,10 +4,10 @@ require 'cgi'
 describe 'Finding member' do
   let (:member) { FactoryBot.create(:member) }
   let (:email) { member.email }
-  subject { finder.member }
+  subject { member }
 
   describe 'by email' do
-    let (:finder) { Identity::Freshdesk::FindMember.new.by_email(email) }
+    let (:member) { Identity::Freshdesk::FindMember.by_email(email) }
     it { is_expected.not_to be nil}
     it { is_expected.to have_attributes email: email }
   end
@@ -22,11 +22,8 @@ Unsubscribe here!
 </a>
          }
     }
-    let (:finder) { Identity::Freshdesk::FindMember.new.by_unsubscribe_link(body) }
+    let (:member) { Identity::Freshdesk::FindMember.by_unsubscribe_link(body) }
     it { is_expected.not_to be nil}
     it { is_expected.to have_attributes email: email }
   end
-
-
-
 end
