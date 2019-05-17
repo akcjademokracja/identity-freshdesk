@@ -25,13 +25,13 @@ module Identity
         return true if ticket['subject'].empty?
 
         # Do not process non-email tickets
-        return true if result['source'].to_i != 1
+        return true if ticket['source'].to_i != 1
 
         # Do not process if the ticket e-mail wasn't sent to the "contact"
         # e-mail address
-        if result['to_emails']
+        if ticket['to_emails']
           default_email = Settings.options.default_mailing_from_email
-          return result['to_emails'].none? { |a| a.include? default_email }
+          return ticket['to_emails'].none? { |a| a.include? default_email }
         end
 
         false
