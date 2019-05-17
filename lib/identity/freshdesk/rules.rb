@@ -169,12 +169,14 @@ module Identity
 
       # save to api
       def persist
-        if @tags || @type || @priority || @status
-          UpdateTicketWorker.perform_async(@ticket['id'], ticket_changeset)
+        ticket_changes = ticket_changeset.select { |_k, v| !v.nil? }
+        unless ticket_changes.empty?
+          UpdateTicketWorker.perform_async(@ticket['id'], ticket_changes)
         end
 
-        if @description
-          UpdateRequesterWorker.perform_async(@ticket['requester_id'], requester_changeset)
+        requester_changes = requester_changeset.select { |_k, v| !v.nil? }
+        unless requester_changeset.empty?
+          UpdateRequesterWorker.perform_async(@ticket['requester_id'], requester_changes)
         end
       end
 
