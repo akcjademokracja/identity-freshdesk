@@ -75,7 +75,8 @@ module Identity
 
       def description_contains?(words)
         from_email = Settings.options.default_mailing_from_email
-        msg = @ticket["description_text"].split(from_email).first
+        # a silly heuristic to get just reply to our email
+        msg = @ticket["description_text"].split("<#{from_email}>").first
         return false if msg.nil?
 
         as_array(words).any? { |w| msg.include?(w) }
