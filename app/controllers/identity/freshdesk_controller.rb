@@ -7,7 +7,7 @@ module Identity
         format.json do
           data = params[:freshdesk_webhook]
 
-          Freshdesk::ProcessTicketWorker.perform_async(
+          Freshdesk::FetchTicketWorker.perform_async(
             data[:ticket][:id],
             data[:triggered_event]
           )
