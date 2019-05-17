@@ -7,7 +7,12 @@ module Identity
         respond_to do |format|
           format.json do
             Rails.logger.info("FreshDesk webhook params #{params}")
-            raise 'JSON does not have :freshdesk_webhook key'
+
+            unless params.has_key? :ticket and
+                  params.has_key? :triggered_event and
+                  params[:ticket].has_key? :id
+              raise "JSON does not have needed keys; params=#{params}"
+            end
 
             Identity::Freshdesk::FetchTicketWorker.perform_async(
               params[:ticket][:id],
