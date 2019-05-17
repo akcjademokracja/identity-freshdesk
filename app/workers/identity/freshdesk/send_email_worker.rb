@@ -5,7 +5,7 @@ module Identity
 
       def perform(to, from, subject, body)
         TransactionalMail.send_email(
-          to: [to],
+          to: [to]
           from: "Freshdesk automation <#{from}>",
           subject: subject,
           body: body
