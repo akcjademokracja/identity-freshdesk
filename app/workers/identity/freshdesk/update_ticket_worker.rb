@@ -6,6 +6,7 @@ module Identity
 
       def perform(ticket_id, attributes)
         begin
+          Sidekiq::Logging.logger.debug("Update ticket #{ticket_id} with #{attributes}")
           update_ticket(ticket_id, attributes)
         rescue API::Retry => try_again
           # retry after limit is restored

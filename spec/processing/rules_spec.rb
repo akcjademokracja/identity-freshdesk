@@ -76,10 +76,10 @@ describe 'rule' do
       it { is_expected.to be false }
     end
 
-    # describe "wrong type and existing tag" do
-    #   let (:conditions) { { is_type: 'Food', has_tag: 'money' } }
-    #   it { is_expected.to be false }
-    # end
+    describe "wrong type and existing tag" do
+      let (:conditions) { { is_type: 'Food', has_tag: 'money' } }
+      it { is_expected.to be false }
+    end
 
     describe 'member is found' do
       let (:conditions) { { found: true } }
@@ -87,8 +87,23 @@ describe 'rule' do
     end
 
     describe 'keyword is found' do
-      let (:conditions) { {contains: 'world' } }
+      let (:conditions) { { contains: 'world' } }
       it { is_expected.to be true }
+    end
+
+    describe 'status is closed' do
+      let (:conditions) { { has_status: 'closed' } }
+      it { is_expected.to be true }
+    end
+
+    describe 'status is closed or resolved' do
+      let (:conditions) { { has_status: ['resolved', 'closed'] } }
+      it { is_expected.to be true }
+    end
+
+    describe 'status is not open' do
+      let (:conditions) { { has_status: 'open' } }
+      it { is_expected.to be false }
     end
   end
 

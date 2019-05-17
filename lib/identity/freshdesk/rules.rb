@@ -43,6 +43,7 @@ module Identity
                when 'is_new' then is_type? 'new'
                when 'is_created' then is_type? 'new'
                when 'is_updated' then is_type? 'update'
+               when 'has_status' then has_status? criterion
                when 'has_tag' then has_tag? criterion
                when 'has_tags' then has_tag? criterion
                when 'done_tag' then !has_tag? criterion
@@ -59,6 +60,10 @@ module Identity
 
       def is_type?(type)
         as_array(type).any? { |t| @ticket['type'] == t }
+      end
+
+      def has_status?(status)
+        as_array(status).any? { |s| @ticket['status'] == status_code(s) }
       end
 
       def is_event?(event)
@@ -146,13 +151,7 @@ module Identity
 
       def set_status!(status)
         status = status.downcase
-        @status = case status
-                  when 'open' then 2
-                  when 'pending' then 3
-                  when 'resolved' then 4
-                  when 'closed' then 5
-                  else status.to_i
-                  end
+        @status = status_code status
       end
 
       # rendering
@@ -191,6 +190,16 @@ module Identity
 
       def requester_changeset
         { description: @description }
+      end
+
+      def status_code(status)
+        case status
+        when 'open' then 2
+        when 'pending' then 3
+        when 'resolved' then 4
+        when 'closed' then 5
+        else status.to_i
+        end
       end
     end
   end
