@@ -6,8 +6,10 @@ module Identity
       respond_to do |format|
         format.json do
           data = params[:freshdesk_webhook]
+          Rails.logger.info("FreshDesk webhook data #{params}")
+          raise 'JSON does not have :freshdesk_webhook key'
 
-          Freshdesk::FetchTicketWorker.perform_async(
+          Identity::Freshdesk::FetchTicketWorker.perform_async(
             data[:ticket][:id],
             data[:triggered_event]
           )

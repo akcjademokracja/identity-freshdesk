@@ -1,3 +1,3 @@
 Identity::Freshdesk::Engine.routes.draw do
-  post 'webhook', to: 'freshdesk#webhook'
+  post 'webhook', action: :webhook, controller: 'freshdesk'
 end
