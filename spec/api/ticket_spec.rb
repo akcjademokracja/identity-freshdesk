@@ -14,7 +14,7 @@ describe 'Freshdesk API for ticket' do
     it 'succeeds' do
       VCR.use_cassette('freshdesk/ticket_set_type', record: :all) do
         expect(update).to have_key 'type'
-        expect(update!['type']).to eq('Media')
+        expect(update['type']).to eq('Media')
       end
     end
   end
@@ -25,7 +25,7 @@ describe 'Freshdesk API for ticket' do
     it 'succeeds' do
       VCR.use_cassette('freshdesk/ticket_set_priority', record: :all) do
         expect(update).to have_key "priority"
-        expect(update!['priority']).to eq(3)
+        expect(update['priority']).to eq(3)
       end
     end
   end
