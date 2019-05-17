@@ -73,6 +73,14 @@ module Identity
         as_array(tag).any? { |t| @ticket['tags'].include? t }
       end
 
+      def description_contains?(words)
+        from_email = Settings.options.default_mailing_from_email
+        msg = @ticket["description_text"].split(from_email).first
+        return false if msg.nil?
+
+        as_array(words).any? { |w| msg.include?(w) }
+      end
+
       # action part
       def execute(actions)
         actions.each do |action, args|

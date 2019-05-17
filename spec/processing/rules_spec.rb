@@ -27,7 +27,7 @@ describe 'rule' do
       "due_by" => "2017-09-01T16:13:18Z",
       "fr_due_by" => "2017-08-28T16:13:18Z",
       "is_escalated" => true,
-      "description" => "<div>fdsfds<br><br>\n</div>",
+      "description" => "<div>Hello world<br><br></div>",
       "description_text" => "fdsfds\n\n",
       "custom_fields" => { "follow_up" => nil },
       "created_at" => "2017-08-25T16:13:18Z",
@@ -83,6 +83,11 @@ describe 'rule' do
 
     describe 'member is found' do
       let (:conditions) { { found: true } }
+      it { is_expected.to be true }
+    end
+
+    describe 'keyword is found' do
+      let (:conditions) { {contains: world } }
       it { is_expected.to be true }
     end
   end
