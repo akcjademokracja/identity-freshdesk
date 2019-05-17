@@ -18,7 +18,7 @@ module Identity
         Settings.freshdesk.rules
       end
 
-      def process(rules_arg=nil)
+      def process(rules_arg = nil)
         rules_arg ||= rules
         rules_arg.each do |r|
           if satisfied(r)
@@ -47,6 +47,7 @@ module Identity
                when 'has_tags' then has_tag? criterion
                when 'done_tag' then !has_tag? criterion
                when 'found' then criterion == @member.present?
+               when 'contains' then description_contains? criterion
                when 'regular_donor' then @member.present? && (criterion == @member.has_regular_donation?)
                else true
                end
@@ -146,15 +147,15 @@ module Identity
       end
 
       # rendering
-      def render(_template)
+      def render(tmpl)
         member = @member
         ticket = @ticket
         event = @event
         ticket_id = ticket['id']
         ticket_link = "https://#{Settings.freshdesk.subdomain}.freshdesk.com/helpdesk/tickets/#{ticket_id}"
 
-        _template = _template.gsub("{{", "<%= ").gsub("}}", " %>")
-        ERB.new(_template).result(binding)
+        tmpl = tmpl.gsub("{{", "<%= ").gsub("}}", " %>")
+        ERB.new(tmpl).result(binding)
       end
 
       # save to api

@@ -5,15 +5,14 @@ module Identity
 
       def perform(ticket, event)
         @event = event
-        @member = FindMember.by_email(ticket['requester']['email']) or
-          @member = FindMember.by_unsubscribe_link(ticket['description'])
+        (@member = FindMember.by_email(ticket['requester']['email'])) ||
+          (@member = FindMember.by_unsubscribe_link(ticket['description']))
 
         rules = Rules.new(ticket, @member, event)
 
         rules.process
         rules.persist
       end
-
     end
   end
 end

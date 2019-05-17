@@ -8,12 +8,12 @@ describe 'Finding member' do
 
   describe 'by email' do
     let (:member) { Identity::Freshdesk::FindMember.by_email(email) }
-    it { is_expected.not_to be nil}
+    it { is_expected.not_to be nil }
     it { is_expected.to have_attributes email: email }
   end
 
   describe 'by unsub link' do
-    let (:body)  {
+    let (:body) {
       %Q{
 <p>This is some email.</p>
 
@@ -23,7 +23,7 @@ Unsubscribe here!
          }
     }
     let (:member) { Identity::Freshdesk::FindMember.by_unsubscribe_link(body) }
-    it { is_expected.not_to be nil}
+    it { is_expected.not_to be nil }
     it { is_expected.to have_attributes email: email }
   end
 end

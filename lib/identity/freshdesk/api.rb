@@ -25,24 +25,24 @@ module Identity
       # API calls
       def get_ticket(ticket_id)
         url = "https://#{domain}/api/v2/tickets/#{ticket_id}"
-        request(:get, url, {include: 'requester'})
+        request(:get, url, { include: 'requester' })
       end
 
       def update_requester(requester_id, data)
         url = "https://#{domain}/api/v2/contacts/#{requester_id}"
-        request(:put, url, {body: data.to_json})
+        request(:put, url, { body: data.to_json })
       end
 
       def update_ticket(ticket_id, data)
         url = "https://#{domain}/api/v2/tickets/#{ticket_id}"
-        request(:put, url, {body: data.to_json})
+        request(:put, url, { body: data.to_json })
       end
 
       # API calling
       class Error < StandardError
       end
 
-      def request(method, url, params=nil)
+      def request(method, url, params = nil)
         c = authenticated_client()
         r = c.request(method, url, params)
 
@@ -52,9 +52,7 @@ module Identity
         else
           raise Error, "Freshdesk API error #{r.status}: #{r.body}"
         end
-
       end
-
 
       # Rate limiting of API calls
       class Retry < StandardError

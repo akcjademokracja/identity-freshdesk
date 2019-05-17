@@ -48,9 +48,11 @@ end
 def admin_required!
   true
 end
+
 def has_permission?(_)
   true
 end
+
 def api_authentication_required!
   true
 end

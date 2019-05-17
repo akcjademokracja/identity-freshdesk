@@ -11,7 +11,7 @@ module Identity
             data[:ticket][:id],
             data[:triggered_event]
           )
-          render json: {success: true}
+          render json: { success: true }
         end
       end
     end

@@ -1,7 +1,7 @@
 module Identity
   module Freshdesk
     class Webhook < ApplicationController
-       ww
+      ww
     end
   end
 end
