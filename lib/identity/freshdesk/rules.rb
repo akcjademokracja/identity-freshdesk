@@ -174,7 +174,7 @@ module Identity
         end
 
         requester_changes = requester_changeset.select { |_k, v| !v.nil? }
-        unless requester_changeset.empty?
+        unless requester_changes.empty?
           UpdateRequesterWorker.perform_async(@ticket['requester_id'], requester_changes)
         end
       end
