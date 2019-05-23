@@ -64,8 +64,8 @@ module Identity
         if r.ok?
           JSON.parse r.body
         else
-          if silly_fd_inconsistency(r.body)
-            Rails.logger.info "Ignoring FD API error #{r.body} as unfixable."
+          if silly_fd_inconsistency(r.status, r.body)
+            Rails.logger.info "FD API: #{method} #{url} #{params} Ignoring FD API error HTTP#{r.status} #{r.body} as unfixable."
             return
           end
           raise Error, "Freshdesk API error #{r.status}: #{r.body}"
@@ -73,9 +73,14 @@ module Identity
       end
 
       # There are API inconsitencies in FreshDesk, that we can do nothing about and retrying is futile.
-      def silly_fd_inconsistency(response)
+      def silly_fd_inconsistency(status, response)
+        # FD will return 404 when updating a contact, who is an agent. So if someone from staff is
+        # a ticket sender, we won't be able to update the ticket.
+        return true if status == 404
+
         begin
           response = JSON.parse(response)
+
           # Freshdesk will not allow to update description if the member name contains /, ", wwww.
           # But it ALLOWS such requesters to be created in the first place.
           # Result: such requesters cannot be updated via API without chaning their name.
