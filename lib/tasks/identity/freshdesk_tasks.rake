@@ -10,6 +10,8 @@ namespace :freshdesk do
     oldest = DateTime.now - args[:days].to_i.days
     page = 1
     scan = true
+
+    ticket_ids = []
     while scan
       tickets = list_tickets(page)
 
@@ -20,10 +22,12 @@ namespace :freshdesk do
           scan = false
           break
         end
-        Identity::Freshdesk::FetchTicketWorker.perform_async(t["id"], "rescan")
+        ticket_ids << t["id"]
       end
       page += 1
     end
-
+    ticket_ids.each do |tid|
+      Identity::Freshdesk::FetchTicketWorker.perform_async(tid, "rescan")
+    end
   end
 end
