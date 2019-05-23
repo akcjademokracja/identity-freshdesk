@@ -10,7 +10,7 @@ module Identity
           update_ticket(ticket_id, attributes)
         rescue API::Retry => try_again
           # retry after limit is restored
-          self.schedule_in try_again.in_seconds
+          self.class.perform_in try_again.in_seconds, ticket_id, attributes
         end
       end
     end
