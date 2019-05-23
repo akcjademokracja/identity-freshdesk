@@ -64,7 +64,7 @@ module Identity
         if r.ok?
           JSON.parse r.body
         else
-          if silly_fd_inconsistency(JSON.parse(r.body))
+          if silly_fd_inconsistency(r.body)
             Rails.logger.info "Ignoring FD API error #{r.body} as unfixable."
             return
           end
@@ -74,14 +74,19 @@ module Identity
 
       # There are API inconsitencies in FreshDesk, that we can do nothing about and retrying is futile.
       def silly_fd_inconsistency(response)
-        # Freshdesk will not allow to update description if the member name contains /, ", wwww.
-        # But it ALLOWS such requesters to be created in the first place.
-        # Result: such requesters cannot be updated via API without chaning their name.
-        return true if response['errors'].any? { |x|
-          x['field'] == 'name' && x['message'] == "/,\",www. not allowed in name"
-        }
+        begin
+          response = JSON.parse(response)
+          # Freshdesk will not allow to update description if the member name contains /, ", wwww.
+          # But it ALLOWS such requesters to be created in the first place.
+          # Result: such requesters cannot be updated via API without chaning their name.
+          return true if response['errors'].any? { |x|
+            x['field'] == 'name' && x['message'] == "/,\",www. not allowed in name"
+          }
 
-        false
+          false
+        rescue JSON::ParserError
+          false
+        end
       end
 
       # Rate limiting of API calls
