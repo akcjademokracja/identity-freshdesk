@@ -38,6 +38,20 @@ module Identity
         request(:put, url, { body: data.to_json })
       end
 
+      def list_tickets(page=1)
+        request(:get, "https://#{domain}/api/v2/tickets", {
+                  page: page,
+                  per_page: 10,
+                  order_by: 'created_at',
+                  order_type: 'desc'
+                }).map do |t|
+          %w{created_at updated_at due_by fr_due_by}.each do |f|
+            t[f] = DateTime.parse t[f]
+          end
+          t
+        end
+      end
+
       # API calling
       class Error < StandardError
       end
