@@ -168,7 +168,7 @@ module Identity
 
       # save to api
       def persist
-        ticket_changes = ticket_changeset.select { |_k, v| !v.nil? }
+        ticket_changes = ticket_changeset.select { |_k, v| !v.nil? and !v.empty? }
         unless ticket_changes.empty?
           UpdateTicketWorker.perform_async(@ticket['id'], ticket_changes)
         end
