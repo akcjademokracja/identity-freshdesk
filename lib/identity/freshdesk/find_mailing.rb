@@ -19,7 +19,7 @@ module Identity
                              .where("mailing_test_cases.template LIKE ?", "%#{subject}%")
                              .select('DISTINCT mailings.id').pluck(:id)
 
-        Mailing.where(id: mailing_ids).or_where(subject: subject)
+        Mailing.where(id: mailing_ids).or(Mailing.where(subject: subject))
       end
     end
   end
