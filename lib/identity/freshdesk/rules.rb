@@ -115,8 +115,7 @@ module Identity
       def tag_by_mailing!
         mailings = FindMailing.by_subject @ticket['subject']
         tags = mailings.map do |m|
-          m.name.split("-")[0].truncate(20, omission: "")
-           .to_slug.transliterate.to_s.downcase
+          m.name.split("-")[0].truncate(20, omission: "").downcase
         end
         @tags += tags.uniq
       end
