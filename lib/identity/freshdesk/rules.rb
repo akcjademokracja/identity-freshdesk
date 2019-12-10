@@ -96,6 +96,7 @@ module Identity
           when 'set_priority' then set_priority! args
           when 'set_status' then set_status! args
           when 'done_tag' then tag! args
+          when 'add_to' then @member.present? && add_to!(args)
           when 'gdpr' then @member.present? && gdpr!(args)
           when 'email' then email! args
           when 'description' then @member.present? && description!(args)
@@ -135,6 +136,11 @@ module Identity
         when 'forget' then Member::GDPR.forget(@member, "FreshDesk automation forget")
         when 'optout' then Member::GDPR.optout(@member, "FreshDesk automation optout")
         end
+      end
+
+      def add_to!(name)
+        list = List.find_or_create_by!(name: name)
+        list.add_new_member(@member)
       end
 
       def tag!(tag)
