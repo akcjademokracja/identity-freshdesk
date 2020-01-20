@@ -133,7 +133,7 @@ module Identity
 
       def gdpr!(op)
         case op
-        when 'forget' then Member::GDPR.forget(@member, "FreshDesk automation forget")
+        when 'forget' then maybe_ghost(@member)
         when 'optout' then Member::GDPR.optout(@member, "FreshDesk automation optout")
         end
       end
@@ -205,6 +205,17 @@ module Identity
         when 'resolved' then 4
         when 'closed' then 5
         else status.to_i
+        end
+      end
+
+      def maybe_ghost(member)
+        return false if member.role == Role.find_by(description: 'Admin')
+        member.unsubscribe_permanently
+        last_year_donations = member.donations.where("created_at > ?", Date.today - 1.year)
+        regular_donations = member.regular_donations
+
+        if last_year_donations.count == 0 and regular_donations.count == 0
+          member.ghost_member
         end
       end
     end
