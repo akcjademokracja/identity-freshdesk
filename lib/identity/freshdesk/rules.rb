@@ -79,7 +79,7 @@ module Identity
       end
 
       def description_contains?(words)
-        from_email = Settings.options.default_mailing_from_email
+        from_email = Settings.options.from_email_address.email_blasts.default_value
         # a silly heuristic to get just reply to our email
         msg = @ticket["description_text"].split("<#{from_email}>").first
         return false if msg.nil?
@@ -123,7 +123,7 @@ module Identity
       def email!(e)
         # XXX add renders
         to = e['to']
-        from = Settings.options.default_mailing_from_email
+        from = Settings.options.from_email_address.email_blasts.default_value
         subject = render e['subject']
         body = render e['body']
 
