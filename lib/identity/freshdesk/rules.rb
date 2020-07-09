@@ -133,8 +133,8 @@ module Identity
 
       def gdpr!(op)
         case op
-        when 'forget' then Member::GDPR.forget(@member, "FreshDesk automation forget")
-        when 'optout' then Member::GDPR.optout(@member, "FreshDesk automation optout")
+        when 'forget' then Ghoster.ghost_members_by_id([@member.id], reason: "FreshDesk automation forget", admin_member_id: @member.id)
+        when 'optout' then @member.unsubscribe
         end
       end
 
