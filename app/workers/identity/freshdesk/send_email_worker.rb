@@ -4,7 +4,7 @@ module Identity
       include Sidekiq::Worker
 
       def perform(to, from, subject, body)
-        TransactionalMail.send_email(
+        Mailer::TransactionalMail.send_email(
           to: [to],
           from: "Freshdesk automation <#{from}>",
           subject: subject,

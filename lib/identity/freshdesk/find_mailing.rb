@@ -8,18 +8,18 @@ module Identity
           subject.gsub!(/^(odp|sv|re): /i, '')
           return mailings_by_subject subject
         else
-          return Mailing.none
+          return Mailings::Mailing.none
         end
       end
 
       def self.mailings_by_subject(subject)
         # By subject test variant used
         # An array of IDs matching the criteria, ex. [101, 102] or an empty array if nothing found
-        mailing_ids = Mailing.joins(:test_cases)
+        mailing_ids = Mailings::Mailing.joins(:test_cases)
                              .where("mailing_test_cases.template LIKE ?", "%#{subject}%")
                              .select('DISTINCT mailings.id').pluck(:id)
 
-        Mailing.where(id: mailing_ids).or(Mailing.where(subject: subject))
+        Mailings::Mailing.where(id: mailing_ids).or(Mailings::Mailing.where(subject: subject))
       end
     end
   end
