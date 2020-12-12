@@ -30,7 +30,7 @@ module Identity
         # Do not process if the ticket e-mail wasn't sent to the "contact"
         # e-mail address
         if ticket['to_emails']
-          default_email = Settings.options.default_mailing_from_email
+          default_email = Settings.options.from_email_address.email_blasts.default_value
           return ticket['to_emails'].none? { |a| a.include? default_email }
         end
 

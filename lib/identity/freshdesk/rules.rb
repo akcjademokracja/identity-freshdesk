@@ -79,7 +79,7 @@ module Identity
       end
 
       def description_contains?(words)
-        from_email = Settings.options.default_mailing_from_email
+        from_email = Settings.options.from_email_address.email_blasts.default_value
         # a silly heuristic to get just reply to our email
         msg = @ticket["description_text"].split("<#{from_email}>").first
         return false if msg.nil?
@@ -115,8 +115,7 @@ module Identity
       def tag_by_mailing!
         mailings = FindMailing.by_subject @ticket['subject']
         tags = mailings.map do |m|
-          m.name.split("-")[0].truncate(20, omission: "")
-           .to_slug.transliterate.to_s.downcase
+          m.name.split("-")[0].truncate(20, omission: "").downcase
         end
         @tags += tags.uniq
       end
@@ -124,7 +123,7 @@ module Identity
       def email!(e)
         # XXX add renders
         to = e['to']
-        from = Settings.options.default_mailing_from_email
+        from = Settings.options.from_email_address.email_blasts.default_value
         subject = render e['subject']
         body = render e['body']
 

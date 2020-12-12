@@ -28,7 +28,7 @@ gem 'identity-freshdesk', git: "https://github.com/akcjademokracja/identity-fres
 
 ### Rules
 
-`options.default_mailing_from_email` is assumed to be the FD email.
+`options.from_email_address.email_blasts.default_value` is assumed to be the FD email.
 
 Below is an example set of rules you can use. Each rules is run for the ticket. If conditions are met, then the actions are run. After all rules are run, then results are pushed back to FD.
 

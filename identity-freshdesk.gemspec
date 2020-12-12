@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'sidekiq', '~> 6.0'
   spec.add_dependency 'httpclient', '~> 2.8.3'
-  spec.add_dependency "rails", "~> 5.2.2", ">= 5.2.2.1"
+  spec.add_dependency "rails", "> 5.2.2", ">= 5.2.2.1"
 
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'database_cleaner'
